@@ -31,7 +31,7 @@ spec:
         - name: SERVICE_CLUSTER_STRATEGY
           value: "kubernetes"
         - name: SERVICE_CLUSTER_KUBERNETES_SERVICENAME
-          value: "k8s-test-1"
+          value: "k8s-poolsvc-1"
       volumeMounts:
         - name: persistent-storage
           mountPath: /data
