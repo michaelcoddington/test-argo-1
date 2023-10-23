@@ -5,6 +5,7 @@ metadata:
   labels:
     app: k8s-test-1
     service: k8s-test-1
+    try-again: maybe not
 spec:
   ports:
     - port: 80
