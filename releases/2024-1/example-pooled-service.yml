@@ -1,0 +1,72 @@
+apiVersion: ecms.scholastic.com/v1
+kind: PooledService
+metadata:
+  name: test-pooled-service-1
+spec:
+  serviceName: k8s-poolsvc-1
+  serviceAccountName: asset-service
+  serviceType: ClusterIP
+  servicePorts:
+    - port: 80
+      targetPort: 8080
+      name: http
+    - port: 5701
+      targetPort: 5701
+      name: hazelcast
+  containers:
+    - name: k8s-test-2
+      image: 486157446650.dkr.ecr.us-east-1.amazonaws.com/k8s-test-2@sha256:9bcfeb06edb9845044b6a5a9ddd23095d473b7681c2f31f084dfadf2bee089d3
+      imagePullPolicy: IfNotPresent
+      resources:
+        requests:
+          cpu: 500m
+          memory: 200Mi
+      ports:
+        - containerPort: 8080
+      env:
+        - name: SERVICE_BUCKET
+          value: "schl-mc-test"
+        - name: SERVICE_TRANSFER_TARGET
+          value: "http://k8s-test-1"
+        - name: SERVER_FORWARD_HEADERS_STRATEGY
+          value: "framework"
+        - name: SERVICE_CLUSTER_STRATEGY
+          value: "kubernetes"
+        - name: SERVICE_CLUSTER_KUBERNETES_SERVICENAME
+          value: "k8s-poolsvc-1"
+      startupProbe:
+        httpGet:
+          path: /actuator/health
+          port: 8080
+        initialDelaySeconds: 5
+        periodSeconds: 2
+        failureThreshold: 30
+      readinessProbe:
+        httpGet:
+          path: /actuator/health
+          port: 8080
+        periodSeconds: 2
+        failureThreshold: 30
+  maxCorePoolReplicas: 1
+  maxTotalReplicas: 5
+  targetCpuUtilization: 50
+  scaleUpRules:
+    stabilizationWindowSeconds: 60
+    policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 30
+      - type: Percent
+        value: 50
+        periodSeconds: 120
+    selectPolicy: Max
+  scaleDownRules:
+    stabilizationWindowSeconds: 60
+    policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 300
+      - type: Percent
+        value: 20
+        periodSeconds: 60
+    selectPolicy: Min
