@@ -14,9 +14,9 @@ spec:
       targetPort: 5701
       name: hazelcast
   containers:
-    - name: k8s-test-2
-      image: 486157446650.dkr.ecr.us-east-1.amazonaws.com/k8s-test-2@sha256:9bcfeb06edb9845044b6a5a9ddd23095d473b7681c2f31f084dfadf2bee089d3
-      imagePullPolicy: IfNotPresent
+    - name: k8s-test-1
+      image: 486157446650.dkr.ecr.us-east-1.amazonaws.com/k8s-test-1:1.0.0-SNAPSHOT
+      imagePullPolicy: Always
       resources:
         requests:
           cpu: 500m
@@ -24,16 +24,17 @@ spec:
       ports:
         - containerPort: 8080
       env:
-        - name: SERVICE_BUCKET
-          value: "schl-mc-test"
-        - name: SERVICE_TRANSFER_TARGET
-          value: "http://k8s-test-1"
+        - name: SERVICE_BASEPATH
+          value: "/data"
         - name: SERVER_FORWARD_HEADERS_STRATEGY
           value: "framework"
         - name: SERVICE_CLUSTER_STRATEGY
           value: "kubernetes"
         - name: SERVICE_CLUSTER_KUBERNETES_SERVICENAME
-          value: "k8s-poolsvc-1"
+          value: "k8s-test-1"
+      volumeMounts:
+        - name: persistent-storage
+          mountPath: /data
       startupProbe:
         httpGet:
           path: /actuator/health
