@@ -48,6 +48,10 @@ spec:
           port: 8080
         periodSeconds: 2
         failureThreshold: 30
+  volumes:
+    - name: persistent-storage
+      persistentVolumeClaim:
+        claimName: efs-claim
   maxCorePoolReplicas: 1
   maxTotalReplicas: 5
   targetCpuUtilization: 50
