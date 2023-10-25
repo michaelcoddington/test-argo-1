@@ -15,7 +15,7 @@ spec:
       name: hazelcast
   containers:
     - name: k8s-test-1
-      image: 486157446650.dkr.ecr.us-east-1.amazonaws.com/k8s-test-1:1.0.0-SNAPSHOT
+      image: 486157446650.dkr.ecr.us-east-1.amazonaws.com/k8s-test-1@sha256:ba37f2df210b988e521a702fbf51a6c84840a4da113a15d155e94e29d7cb7163
       imagePullPolicy: Always
       resources:
         requests:
