@@ -20,18 +20,18 @@ data:
       server {
         listen       80;
         listen  [::]:80;
-        server_name  k8s-test-1.*;
+        server_name  k8s-poolsvc-1.*;
         location / {
-            set $test_1_backend http://k8s-test-1;
+            set $test_1_backend http://k8s-poolsvc-1;
             proxy_pass $test_1_backend;
         }
       }
       server {
          listen       80;
          listen  [::]:80;
-         server_name  k8s-test-2.*;
+         server_name  k8s-poolsvc-2.*;
          location / { 
-             set $test_2_backend http://k8s-test-2;
+             set $test_2_backend http://k8s-poolsvc-2;
              proxy_pass $test_2_backend;
          }
        }
