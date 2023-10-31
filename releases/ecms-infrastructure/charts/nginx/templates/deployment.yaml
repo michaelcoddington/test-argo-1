@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        # This is the actual Nginx container, which will use the above configuration.
+        - name: nginx
+          image: nginx:1.25.2
+          resources:
+            requests:
+              cpu: "1"
+              memory: 500Mi
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nginx
+        # This is the DNS container that will be used by Nginx to resolve services (note the resolver line in the configuration)
+        - name: dnsmasq
+          image: "janeczku/go-dnsmasq:release-1.0.7"
+          args:
+            - --listen
+            - "127.0.0.1:53"
+            - --default-resolver
+            - --append-search-domains
+      volumes:
+        - name: config-volume
+          configMap:
+            name: nginx-config
